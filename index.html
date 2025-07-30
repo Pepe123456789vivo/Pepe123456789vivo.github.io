@@ -1,25 +1,87 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <title>Oi</title>
+  <meta charset="UTF-8">
+  <title>Chat GPT Integrado</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #f4f4f4;
+      padding: 20px;
+    }
+    #chatbox {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 600px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    #messages {
+      max-height: 400px;
+      overflow-y: auto;
+      margin-bottom: 15px;
+    }
+    .msg {
+      margin-bottom: 10px;
+    }
+    .user {
+      color: blue;
+      font-weight: bold;
+    }
+    .gpt {
+      color: green;
+      font-weight: bold;
+    }
+    textarea {
+      width: 100%;
+      height: 60px;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+    }
+  </style>
 </head>
-
 <body>
-    <div class="container">
-        <div class="tenor-gif-embed" data-postid="5229436654229398568" data-share-method="host" data-aspect-ratio="1.25714" data-width="100%"><a href="https://tenor.com/view/cat-gif-5229436654229398568">Cat Sticker</a>from <a href="https://tenor.com/search/cat-stickers">Cat Stickers</a></div>
-        <script type="text/javascript" async src="https://tenor.com/embed.js"></script>
-        <script type="text/javascript" async src="https://tenor.com/embed.js"></script>
-        <h1>Oi, Tudo Bem Vc sabia que vc e uma menina muito linda?</h1>
-        <p>sabia? </p>
-        <div class="btn">
-            <a href="no1.html">SIM</a>
-            <a href="no1.html">NÃO</a>
-        </div>
-    </div>
-</body>
 
+<div id="chatbox">
+  <h2>🤖 Chat con GPT</h2>
+  <div id="messages"></div>
+  <textarea id="userInput" placeholder="Escribe tu mensaje..."></textarea><br>
+  <button onclick="sendMessage()">Enviar</button>
+</div>
+
+<script>
+  const apiKey = "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"; // 👈 Reemplaza esto con tu clave API de OpenAI
+
+  async function sendMessage() {
+    const input = document.getElementById("userInput");
+    const userText = input.value.trim();
+    if (!userText) return;
+
+    const messagesDiv = document.getElementById("messages");
+    messagesDiv.innerHTML += `<div class="msg user">Tú: ${userText}</div>`;
+    input.value = "";
+
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + apiKey
+      },
+      body: JSON.stringify({
+        model: "gpt-3.5-turbo",
+        messages: [{ role: "user", content: userText }]
+      })
+    });
+
+    const data = await response.json();
+    const reply = data.choices[0].message.content.trim();
+    messagesDiv.innerHTML += `<div class="msg gpt">GPT: ${reply}</div>`;
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  }
+</script>
+
+</body>
 </html>
